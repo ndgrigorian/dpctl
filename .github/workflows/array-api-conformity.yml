@@ -55,6 +55,7 @@ jobs:
 
       - name: Install array API test dependencies
         shell: bash -l {0}
+        run: |
           cd /home/runner/work/array-api-tests
           pip install -r requirements.txt
 
