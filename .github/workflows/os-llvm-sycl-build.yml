@@ -85,14 +85,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-          
-      - name: Get array API tests repo
-        if: steps.cache-array-api-tests.outputs.cache-hit != 'true'
-        shell: bash -l {0}
-        run: |
-          cd /home/runner/work
-          git clone --recurse-submodules https://github.com/data-apis/array-api-tests -b 2022.05.18
-          
+
       - name: build dpctl
         shell: bash -l {0}
         run: |
@@ -107,10 +100,3 @@ jobs:
           CC=clang CXX=clang++ python setup.py develop -G Ninja
           python -c "import dpctl; dpctl.lsplatform()" || exit 1
           SYCL_ENABLE_HOST_DEVICE=1 python -m pytest -v dpctl/tests
-          
-      - name: Run array API test
-        shell: bash -l {0}
-        run: |
-          export ARRAY_API_TESTS_MODULE=dpctl.tensor
-          pytest /home/runner/work/array-api-tests/array_api_tests/
-
