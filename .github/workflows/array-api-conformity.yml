@@ -79,6 +79,7 @@ jobs:
           
       - name: Run array API conformity test
         shell: bash -l {0]
+        run: |
           echo $PWD
           python -c "import dpctl; dpctl.lsplatform()"
           cd /home/runner/work/array-api-tests
