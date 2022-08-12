@@ -73,8 +73,8 @@ jobs:
       - name: Build dpctl
         shell: bash -l {0}
         run: |
-          source /opt/intel/oneapi/setvars.sh intel64
-          python setup.py develop -- -G Ninja -DCMAKE_C_COMPILER:PATH=$(which icx) -DCMAKE_CXX_COMPILER:PATH=$(which icpx)
+          source /opt/intel/oneapi/setvars.sh
+          python setup.py develop -- -G Ninja -DCMAKE_C_COMPILER:PATH=icx -DCMAKE_CXX_COMPILER:PATH=icpx
 
       - name: Run array API test
         shell: bash -l {0}
