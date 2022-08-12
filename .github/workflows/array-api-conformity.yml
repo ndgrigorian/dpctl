@@ -75,12 +75,15 @@ jobs:
       - name: Install array API test dependencies
         shell: bash -l {0}
         run: |
+          python -c "import dpctl; dpctl.lsplatform()"
           cd /home/runner/work/array-api-tests
           pip install -r requirements.txt
 
       - name: Run array API test
         shell: bash -l {0}
         run: |
+          echo $PWD
+          python -c "import dpctl; dpctl.lsplatform()"
           cd /home/runner/work/array-api-tests
           export ARRAY_API_TESTS_MODULE=dpctl.tensor
           pytest array_api_tests/
