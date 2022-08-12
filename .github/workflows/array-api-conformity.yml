@@ -71,17 +71,8 @@ jobs:
           icx --version
           python setup.py develop -- -G Ninja -DCMAKE_C_COMPILER:PATH=$(which icx) -DCMAKE_CXX_COMPILER:PATH=$(which icpx)
           python -c "import dpctl; dpctl.lsplatform()"
-          
-      - name: Install array API test dependencies
-        shell: bash -l {0}
-        run: |
-          python -c "import dpctl; dpctl.lsplatform()"
           cd /home/runner/work/array-api-tests
           pip install -r requirements.txt
-
-      - name: Run array API test
-        shell: bash -l {0}
-        run: |
           echo $PWD
           python -c "import dpctl; dpctl.lsplatform()"
           cd /home/runner/work/array-api-tests
