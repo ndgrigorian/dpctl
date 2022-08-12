@@ -69,21 +69,11 @@ jobs:
         run: |
           pip install numpy cython setuptools pytest scikit-build
 
-      - name: Build dpctl
+      - name: Build dpctl+run conformity test
         shell: bash -l {0}
         run: |
           source /opt/intel/oneapi/setvars.sh
-          icx --version
           python setup.py develop -- -G Ninja -DCMAKE_C_COMPILER:PATH=$(which icx) -DCMAKE_CXX_COMPILER:PATH=$(which icpx)
-          echo $PWD
-          
-      - name: Run array API conformity test
-        shell: bash -l {0}
-        run: |
-          echo $PWD
-          python -c "import dpctl; dpctl.lsplatform()"
           cd /home/runner/work/array-api-tests
-          echo $PWD
           export ARRAY_API_TESTS_MODULE=dpctl.tensor
           pytest array_api_tests/ --ci
-          
