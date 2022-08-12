@@ -79,5 +79,5 @@ jobs:
           python -c "import dpctl; dpctl.lsplatform()"
           cd /home/runner/work/array-api-tests
           export ARRAY_API_TESTS_MODULE=dpctl.tensor
-          pytest array_api_tests/
+          pytest array_api_tests/ --ci
           
