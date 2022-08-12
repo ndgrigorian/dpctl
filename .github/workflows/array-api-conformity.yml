@@ -34,24 +34,26 @@ jobs:
           python-version: '3.10'
           architecture: x64
       
-      - name: Cache array API tests
-        id: cache-array-api-tests
-        uses: actions/cache@v3
-        with:
-          path: |
-            /home/runner/work/array-api-tests/
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('/home/runner/work/array-api-tests/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+#       - name: Cache array API tests
+#         id: cache-array-api-tests
+#         uses: actions/cache@v3
+#         with:
+#           path: |
+#             /home/runner/work/array-api-tests/
+#           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('/home/runner/work/array-api-tests/requirements.txt') }}
+#           restore-keys: |
+#             ${{ runner.os }}-build-${{ env.cache-name }}-
+#             ${{ runner.os }}-build-
+#             ${{ runner.os }}-
 
       - name: Get array API tests repo
-        if: steps.cache-array-api-tests.outputs.cache-hit != 'true'
+#         if: steps.cache-array-api-tests.outputs.cache-hit != 'true'
         shell: bash -l {0}
         run: |
           cd /home/runner/work
-          git clone --recurse-submodules https://github.com/data-apis/array-api-tests -b 2022.05.18
+          git clone https://github.com/data-apis/array-api-tests -b 2022.05.18
+          cd 2022.05.18
+          git submodule update --init
 
       - name: Checkout repo
         uses: actions/checkout@v2
