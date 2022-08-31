@@ -559,13 +559,15 @@ jobs:
         shell: bash -l {0}
         run: |
           cd /home/runner/work/array-api-tests
+          conda activate test_dpctl
           pip install -r requirements.txt
       - name: Install jq
         shell: bash -l {0}
         run: |
           sudo apt-get install jq
-      - name: Array API conformity tests
-        shell: bash -l {0}
+      - name: Run array API conformity tests
+        id: run-array-api-tests
+        sheln: bash -l {0}
         run: |
           . $CONDA/etc/profile.d/conda.sh
           conda activate test_dpctl
@@ -576,23 +578,32 @@ jobs:
           export ARRAY_API_TESTS_MODULE=dpctl.tensor
           cd /home/runner/work/array-api-tests
           pytest --ci --json-report array_api_tests/ || true
+          FILE=.report.json
+          [ -f .report.json ] && echo "::set-output name=JSON::0" || "::set-output name=JSON::1"
       - name: Set Github environment variables
         shell: bash -l {0}
         run: |
-          PASSED_TESTS=$(jq '.summary | .passed // 0' ~/array-api-tests/.report.json)
-          echo "PASSED=$PASSED_TESTS" >> $
-          FAILED_TESTS=$(jq '.summary | .failed // 0' ~/array-api-tests/.report.json)
-          echo "FAILED=$FAILED_TESTS" >> $GITHUB_ENV
-          SKIPPED_TESTS=$(jq '.summary | .skipped // 0' ~/array-api-tests/.report.json)
-          echo "SKIPPED=$SKIPPED_TESTS" >> $GITHUB_ENV
+          if [ ${{ steps.run-array-api-tests.outputs.JSON }} == 0]; then
+            PASSED_TESTS=$(jq '.summary | .passed // 0' ~/array-api-tests/.report.json)
+            # echo "PASSED=$PASSED_TESTS" >> $GITHUB_ENV
+            FAILED_TESTS=$(jq '.summary | .failed // 0' ~/array-api-tests/.report.json)
+            # echo "FAILED=$FAILED_TESTS" >> $GITHUB_ENV
+            SKIPPED_TESTS=$(jq '.summary | .skipped // 0' ~/array-api-tests/.report.json)
+            # echo "SKIPPED=$SKIPPED_TESTS" >> $GITHUB_ENV
+            MESSAGE=$'Array API standard conformance tests ran successfully.\nPassed: ${{ env.PASSED }}\nFailed: ${{ env.FAILED }}\nSkipped: ${{ env.SKIPPED }}'
+            echo "MESSAGE=$MESSAGE" >> $GITHUB_ENV
+          else
+            MESSAGE=$'Array API standard conformance tests failed to run.'
+            echo "MESSAGE=$MESSAGE" >> $GITHUB_ENV
       - name: Post result to PR
         uses: mshick/add-pr-comment@v1
         with:
           message: |
-            Array API standard conformance test ran successfully.
-            Passed: ${{ env.PASSED }}
-            Failed: ${{ env.FAILED }}
-            Skipped: ${{ env.SKIPPED }}
+            # Array API standard conformance test ran successfully.
+            # Passed: ${{ env.PASSED }}
+            # Failed: ${{ env.FAILED }}
+            # Skipped: ${{ env.SKIPPED }}
+            ${{env.MESSAGE}}
           allow-repeats: false
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
