@@ -30,7 +30,7 @@ jobs:
       - name: Cache conda packages
         uses: actions/cache@v3
         env:
-          CACHE_NUMBER: 3  # Increase to reset cache
+          CACHE_NUMBER: 4  # Increase to reset cache
         with:
           path: ~/.conda/pkgs
           key:
@@ -78,7 +78,7 @@ jobs:
       - name: Cache conda packages
         uses: actions/cache@v3
         env:
-          CACHE_NUMBER: 3  # Increase to reset cache
+          CACHE_NUMBER: 4  # Increase to reset cache
         with:
           path: /home/runner/conda_pkgs_dir
           key:
@@ -140,7 +140,7 @@ jobs:
       - name: Cache conda packages
         uses: actions/cache@v3
         env:
-          CACHE_NUMBER: 3  # Increase to reset cache
+          CACHE_NUMBER: 4  # Increase to reset cache
         with:
           path: ~/.conda/pkgs
           key:
@@ -219,7 +219,7 @@ jobs:
       - name: Cache conda packages
         uses: actions/cache@v3
         env:
-          CACHE_NUMBER: 3  # Increase to reset cache
+          CACHE_NUMBER: 4  # Increase to reset cache
         with:
           path: /home/runner/conda_pkgs_dir
           key:
@@ -381,7 +381,7 @@ jobs:
       - name: Cache conda packages
         uses: actions/cache@v3
         env:
-          CACHE_NUMBER: 3  # Increase to reset cache
+          CACHE_NUMBER: 4  # Increase to reset cache
         with:
           path: ~/.conda/pkgs
           key:
@@ -494,7 +494,7 @@ jobs:
         id: cache-array-api-tests
         uses: actions/cache@v3
         env:
-          ARRAY_CACHE: 2
+          ARRAY_CACHE: 3
         with:
           path: |
             /home/runner/work/array-api-tests/
@@ -540,7 +540,7 @@ jobs:
       - name: Cache conda packages
         uses: actions/cache@v3
         env:
-          CACHE_NUMBER: 3  # Increase to reset cache
+          CACHE_NUMBER: 4  # Increase to reset cache
         with:
           path: ~/.conda/pkgs
           key:
@@ -604,6 +604,6 @@ jobs:
             # Failed: ${{ env.FAILED }}
             # Skipped: ${{ env.SKIPPED }}
             ${{env.MESSAGE}}
-          allow-repeats: false
+          allow-repeats: true
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
