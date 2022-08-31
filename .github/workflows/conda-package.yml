@@ -567,7 +567,7 @@ jobs:
           sudo apt-get install jq
       - name: Run array API conformity tests
         id: run-array-api-tests
-        sheln: bash -l {0}
+        shell: bash -l {0}
         run: |
           . $CONDA/etc/profile.d/conda.sh
           conda activate test_dpctl
