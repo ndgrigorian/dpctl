@@ -493,10 +493,12 @@ jobs:
       - name: Cache array API tests
         id: cache-array-api-tests
         uses: actions/cache@v3
+        env:
+          ARRAY_CACHE: 1
         with:
           path: |
-            /home/runner/work/array-api-tests-08-19-22/
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('/home/runner/work/array-api-tests-08-19-22/requirements.txt') }}
+            /home/runner/work/array-api-tests/
+          key: ${{ runner.os }}-array-api-${{ env.cache-name }}-{{ env.ARRAY_CACHE }}-${{ hashFiles('/home/runner/work/array-api-tests/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -506,9 +508,8 @@ jobs:
         shell: bash -l {0}
         run: |
           cd /home/runner/work
-          git clone --recurse-submodules https://github.com/data-apis/array-api-tests array-api-tests-08-19-22
-          cd array-api-tests-08-19-22
-          git checkout 66ab89c097d98f876e3c62f72e854ddb7d327f2e
+          git clone --recurse-submodules https://github.com/data-apis/array-api-tests array-api-tests
+          cd array-api-tests
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
@@ -538,7 +539,7 @@ jobs:
       - name: Cache conda packages
         uses: actions/cache@v3
         env:
-          CACHE_NUMBER: 1  # Increase to reset cache
+          CACHE_NUMBER: 3  # Increase to reset cache
         with:
           path: ~/.conda/pkgs
           key:
@@ -556,7 +557,7 @@ jobs:
       - name: Install array API test dependencies
         shell: bash -l {0}
         run: |
-          cd /home/runner/work/array-api-tests-08-19-22
+          cd /home/runner/work/array-api-tests
           pip install -r requirements.txt
       - name: Install jq
         shell: bash -l {0}
@@ -568,16 +569,16 @@ jobs:
           export SYCL_ENABLE_HOST_DEVICE=1
           python -c "import dpctl; dpctl.lsplatform()"
           export ARRAY_API_TESTS_MODULE=dpctl.tensor
-          cd /home/runner/work/array-api-tests-08-19-22
-          pytest --ci --json-report array_api_tests/
+          cd /home/runner/work/array-api-tests
+          pytest --ci --json-report array_api_tests/ || true
       - name: Set Github environment variables
         shell: bash -l {0}
         run: |
-          PASSED_TESTS=$(jq '.summary | .passed // 0' ~/array-api-tests-08-19-22/.report.json)
+          PASSED_TESTS=$(jq '.summary | .passed // 0' ~/array-api-tests/.report.json)
           echo "PASSED=$PASSED_TESTS" >> $
-          FAILED_TESTS=$(jq '.summary | .failed // 0' ~/array-api-tests-08-19-22/.report.json)
+          FAILED_TESTS=$(jq '.summary | .failed // 0' ~/array-api-tests/.report.json)
           echo "FAILED=$FAILED_TESTS" >> $GITHUB_ENV
-          SKIPPED_TESTS=$(jq '.summary | .skipped // 0' ~/array-api-tests-08-19-22/.report.json)
+          SKIPPED_TESTS=$(jq '.summary | .skipped // 0' ~/array-api-tests/.report.json)
           echo "SKIPPED=$SKIPPED_TESTS" >> $GITHUB_ENV
       - name: Post result to PR
         uses: mshick/add-pr-comment@v1
