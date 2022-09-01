@@ -579,6 +579,10 @@ jobs:
           export ARRAY_API_TESTS_MODULE=dpctl.tensor
           cd /home/runner/work/array-api-tests
           pytest --ci --json-report array_api_tests/ || true
+      - name: Set Github environment variables
+        shell: bash -l {0}
+        run: |
+          cd /home/runner/work/array-api-tests
           inner=$(jq -n --arg .passed 15 \
                         --arg .failed 3 \
                         --arg .skipped 23 \
@@ -587,10 +591,7 @@ jobs:
           report=$(jq -n --argjson .summary "[$inner]" \
                         '$ARGS.named'
           )
-          echo "$report" >> .report.json
-      - name: Set Github environment variables
-        shell: bash -l {0}
-        run: |
+          echo "$report" >> /home/runner/work/array-api-tests/.report.json
           FILE=~/array-api-tests/.report.json
           if [ -f FILE ]; then
             PASSED_TESTS=$(jq '.summary | .passed // 0' FILE)
