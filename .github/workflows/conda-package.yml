@@ -592,7 +592,7 @@ jobs:
                         '$ARGS.named'
           )
           echo "$report" >> /home/runner/work/array-api-tests/.report.json
-          FILE=~/array-api-tests/.report.json
+          FILE=/home/runner/work/array-api-tests/.report.json
           if [ -f FILE ]; then
             PASSED_TESTS=$(jq '.summary | .passed // 0' FILE)
             echo "PASSED=$PASSED_TESTS" >> $GITHUB_ENV
