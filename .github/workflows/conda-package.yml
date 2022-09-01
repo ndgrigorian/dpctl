@@ -586,13 +586,13 @@ jobs:
         run: |
           FILE=/home/runner/work/array-api-tests/.report.json
           echo $FILE
-          echo $(jq '.summary | .passed // 0' FILE)
+          echo $(jq '.summary | .passed // 0' $FILE)
           if test -f "$FILE"; then
-            PASSED_TESTS=$(jq '.summary | .passed // 0' FILE)
+            PASSED_TESTS=$(jq '.summary | .passed // 0' $FILE)
             echo "PASSED=$PASSED_TESTS" >> $GITHUB_ENV
-            FAILED_TESTS=$(jq '.summary | .failed // 0' FILE)
+            FAILED_TESTS=$(jq '.summary | .failed // 0' $FILE)
             echo "FAILED=$FAILED_TESTS" >> $GITHUB_ENV
-            SKIPPED_TESTS=$(jq '.summary | .skipped // 0' FILE)
+            SKIPPED_TESTS=$(jq '.summary | .skipped // 0' $FILE)
             echo "SKIPPED=$SKIPPED_TESTS" >> $GITHUB_ENV
             MESSAGE=$'Array API standard conformance tests ran successfully.\nPassed: ${{ env.PASSED }}\nFailed: ${{ env.FAILED }}\nSkipped: ${{ env.SKIPPED }}'
             echo "MESSAGE=$MESSAGE" >> $GITHUB_ENV
