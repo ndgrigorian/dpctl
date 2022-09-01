@@ -600,10 +600,6 @@ jobs:
         uses: mshick/add-pr-comment@v1
         with:
           message: |
-            # Array API standard conformance test ran successfully.
-            # Passed: ${{ env.PASSED }}
-            # Failed: ${{ env.FAILED }}
-            # Skipped: ${{ env.SKIPPED }}
             ${{env.MESSAGE}}
           allow-repeats: true
           repo-token: ${{ secrets.GITHUB_TOKEN }}
