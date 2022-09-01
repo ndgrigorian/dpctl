@@ -580,11 +580,11 @@ jobs:
           cd /home/runner/work/array-api-tests
           pytest --ci --json-report array_api_tests/ || true
           FILE=.report.json
-          [ -f .report.json ] && echo "JSON="true"" >> $GITHUB_ENV || "JSON="false"" >> $GITHUB_ENV
+          [ -f .report.json ] && echo "::set-output name=JSON::0" || echo "::set-output name=JSON::1"
       - name: Set Github environment variables
         shell: bash -l {0}
         run: |
-          if [ ${{ env.JSON }} == "true"]; then
+          if [ ${{ steps.run-array-api-tests.outputs.JSON }} == 0]; then
             PASSED_TESTS=$(jq '.summary | .passed // 0' ~/array-api-tests/.report.json)
             # echo "PASSED=$PASSED_TESTS" >> $GITHUB_ENV
             FAILED_TESTS=$(jq '.summary | .failed // 0' ~/array-api-tests/.report.json)
