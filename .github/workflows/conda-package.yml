@@ -571,6 +571,7 @@ jobs:
         id: run-array-api-tests
         shell: bash -l {0}
         run: |
+          FILE=/home/runner/work/array-api-tests/.report.json
           . $CONDA/etc/profile.d/conda.sh
           conda activate test_dpctl
           # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
@@ -579,12 +580,14 @@ jobs:
           python -c "import dpctl; dpctl.lsplatform()"
           export ARRAY_API_TESTS_MODULE=numpy.array_api
           cd /home/runner/work/array-api-tests
-          pytest --ci --json-report array_api_tests/ || true
+          pytest --ci --json-report --json-report-file=FILE array_api_tests/ || true
       - name: Set Github environment variables
         shell: bash -l {0}
         run: |
           FILE=/home/runner/work/array-api-tests/.report.json
-          if [ -f FILE ]; then
+          echo $FILE
+          echo $(jq '.summary | .passed // 0' FILE)
+          if test -f "$FILE"; then
             PASSED_TESTS=$(jq '.summary | .passed // 0' FILE)
             echo "PASSED=$PASSED_TESTS" >> $GITHUB_ENV
             FAILED_TESTS=$(jq '.summary | .failed // 0' FILE)
