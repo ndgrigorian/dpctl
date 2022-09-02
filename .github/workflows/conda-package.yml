@@ -593,9 +593,9 @@ jobs:
             SKIPPED_TESTS=$(jq '.summary | .skipped // 0' $FILE)
             echo "SKIPPED=$SKIPPED_TESTS" >> $GITHUB_ENV
             MESSAGE="Array API standard conformance tests ran successfully.
-            Passed: ${{ env.PASSED }}
-            Failed: ${{ env.FAILED }}
-            Skipped: ${{ env.SKIPPED }}"
+            Passed: $PASSED_TESTS
+            Failed: $FAILED_TESTS
+            Skipped: $SKIPPED_TESTS"
             echo "MESSAGE<<EOF" >> $GITHUB_ENV
             echo "$MESSAGE" >> $GITHUB_ENV
             echo "EOF" >> $GITHUB_ENV
