@@ -585,8 +585,6 @@ jobs:
         shell: bash -l {0}
         run: |
           FILE=/home/runner/work/array-api-tests/.report.json
-          echo $FILE
-          echo $(jq '.summary | .passed // 0' $FILE)
           if test -f "$FILE"; then
             PASSED_TESTS=$(jq '.summary | .passed // 0' $FILE)
             echo "PASSED=$PASSED_TESTS" >> $GITHUB_ENV
@@ -594,8 +592,16 @@ jobs:
             echo "FAILED=$FAILED_TESTS" >> $GITHUB_ENV
             SKIPPED_TESTS=$(jq '.summary | .skipped // 0' $FILE)
             echo "SKIPPED=$SKIPPED_TESTS" >> $GITHUB_ENV
-            MESSAGE=$'Array API standard conformance tests ran successfully.\nPassed: ${{ env.PASSED }}\nFailed: ${{ env.FAILED }}\nSkipped: ${{ env.SKIPPED }}'
-            echo "MESSAGE=$MESSAGE" >> $GITHUB_ENV
+            MESSAGE=$(cat << EOF
+            Array API standard conformance tests ran successfully.
+            Passed: ${{ env.PASSED }}
+            Failed: ${{ env.FAILED }}
+            Skipped: ${{ env.SKIPPED }}
+            EOF
+            )
+            echo "MESSAGE<<EOF" >> $GITHUB_ENV
+            echo "$MESSAGE" >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
           else
             MESSAGE=$'Array API standard conformance tests failed to run.'
             echo "MESSAGE=$MESSAGE" >> $GITHUB_ENV
@@ -604,7 +610,7 @@ jobs:
         uses: mshick/add-pr-comment@v1
         with:
           message: |
-            ${{env.MESSAGE}}
+            ${{ env.MESSAGE }}
           allow-repeats: true
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
