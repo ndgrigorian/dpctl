@@ -567,7 +567,7 @@ jobs:
         shell: bash -l {0}
         run: |
           sudo apt-get install jq
-      - name: Run array API conformity tests
+      - name: Run array API conformance tests
         id: run-array-api-tests
         shell: bash -l {0}
         run: |
@@ -580,7 +580,7 @@ jobs:
           python -c "import dpctl; dpctl.lsplatform()"
           export ARRAY_API_TESTS_MODULE=numpy.array_api
           cd /home/runner/work/array-api-tests
-          pytest --ci --json-report --json-report-file=FILE array_api_tests/ || true
+          pytest --ci --json-report --json-report-file=$FILE array_api_tests/ || true
       - name: Set Github environment variables
         shell: bash -l {0}
         run: |
