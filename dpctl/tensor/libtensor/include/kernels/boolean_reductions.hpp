@@ -304,6 +304,8 @@ boolean_reduction_contig_impl(sycl::queue exec_q,
                 NoOpIndexerT{}};
             ReductionIndexerT reduction_indexer{};
 
+            RedOpT red_op{};
+
             cgh.parallel_for<class boolean_reduction_seq_contig_krn<
                 argTy, resTy, RedOpT, InputOutputIterIndexerT,
                 ReductionIndexerT>>(
@@ -311,7 +313,7 @@ boolean_reduction_contig_impl(sycl::queue exec_q,
                 SequentialBooleanReduction<argTy, resTy, RedOpT,
                                            InputOutputIterIndexerT,
                                            ReductionIndexerT>(
-                    arg_tp, res_tp, RedOpT(), identity_val, in_out_iter_indexer,
+                    arg_tp, res_tp, red_op, identity_val, in_out_iter_indexer,
                     reduction_indexer, reduction_nelems));
         });
     }
@@ -515,6 +517,8 @@ boolean_reduction_strided_impl(sycl::queue exec_q,
     size_t wg =
         4 * (*std::max_element(std::begin(sg_sizes), std::end(sg_sizes)));
 
+    RedOpT red_op{};
+
     sycl::event red_ev;
     if (reduction_nelems < wg) {
         red_ev = exec_q.submit([&](sycl::handler &cgh) {
@@ -538,7 +542,7 @@ boolean_reduction_strided_impl(sycl::queue exec_q,
                 SequentialBooleanReduction<argTy, resTy, RedOpT,
                                            InputOutputIterIndexerT,
                                            ReductionIndexerT>(
-                    arg_tp, res_tp, RedOpT(), identity_val, in_out_iter_indexer,
+                    arg_tp, res_tp, red_op, identity_val, in_out_iter_indexer,
                     reduction_indexer, reduction_nelems));
         });
     }
@@ -597,7 +601,7 @@ boolean_reduction_strided_impl(sycl::queue exec_q,
                 StridedBooleanReduction<argTy, resTy, RedOpT, GroupOpT,
                                         InputOutputIterIndexerT,
                                         ReductionIndexerT>(
-                    arg_tp, res_tp, RedOpT(), GroupOpT(), identity_val,
+                    arg_tp, res_tp, red_op, GroupOpT(), identity_val,
                     in_out_iter_indexer, reduction_indexer, reduction_nelems,
                     reductions_per_wi));
         });
